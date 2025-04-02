@@ -1,6 +1,5 @@
 import {Component} from 'react'
-
-import Loader from 'react-loader-spinner'
+import {TailSpin} from 'react-loader-spinner'
 
 import TeamCard from '../TeamCard'
 
@@ -11,18 +10,11 @@ const teamsApiUrl = 'https://apis.ccbp.in/ipl'
 class Home extends Component {
   state = {
     isLoading: true,
-    teams: [],
+    teamsData: [],
   }
 
   componentDidMount() {
     this.getTeams()
-  }
-
-  setTeams = (formattedData, isLoading) => {
-    this.setState({
-      teams: formattedData,
-      isLoading,
-    })
   }
 
   getTeams = async () => {
@@ -31,28 +23,30 @@ class Home extends Component {
     const formattedData = fetchedData.teams.map(team => ({
       name: team.name,
       id: team.id,
-      teamImageUrl: team.team_image_url,
+      teamImageURL: team.team_image_url,
     }))
-    this.setTeams(formattedData, false)
+
+    this.setState({
+      teamsData: formattedData,
+      isLoading: false,
+    })
   }
 
   renderTeamsList = () => {
-    const {teams} = this.state
+    const {teamsData} = this.state
 
     return (
       <ul className="teams-list">
-        {teams.map(teamData => (
-          <TeamCard key={teamData.id} teamData={teamData} />
+        {teamsData.map(team => (
+          <TeamCard teamDetails={team} key={team.id} />
         ))}
       </ul>
     )
   }
 
   renderLoader = () => (
-    <div className="loader-container" data-testid="loader">
-      {' '}
-      {/* Added testid */}
-      <Loader type="Oval" color="#ffffff" height="50" />
+    <div testid="loader" className="loader-container">
+      <TailSpin type="Oval" color="#ffffff" height={50} />
     </div>
   )
 
@@ -60,16 +54,18 @@ class Home extends Component {
     const {isLoading} = this.state
 
     return (
-      <div className="home-container">
-        <div className="logo-title-container">
-          <img
-            src="https://assets.ccbp.in/frontend/react-js/ipl-logo-img.png"
-            alt="ipl logo"
-            className="ipl-logo"
-          />
-          <h1 className="home-heading">IPL Dashboard</h1>
+      <div className="home-route-container">
+        <div className="teams-list-container">
+          <div className="ipl-dashboard-heading-container">
+            <img
+              src="https://assets.ccbp.in/frontend/react-js/ipl-logo-img.png"
+              alt="ipl logo"
+              className="ipl-logo"
+            />
+            <h1 className="ipl-dashboard-heading">IPL Dashboard</h1>
+          </div>
+          {isLoading ? this.renderLoader() : this.renderTeamsList()}
         </div>
-        {isLoading ? this.renderLoader() : this.renderTeamsList()}
       </div>
     )
   }
