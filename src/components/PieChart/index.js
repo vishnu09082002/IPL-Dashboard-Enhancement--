@@ -1,5 +1,4 @@
-// eslint-disable-next-line
-import {
+import{
   PieChart as PieChartComponent,
   Pie,
   Cell,
@@ -34,5 +33,4 @@ const PieChart = props => {
     </div>
   )
 }
-
 export default PieChart
